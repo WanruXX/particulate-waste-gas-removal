@@ -11,7 +11,7 @@ interface InfoPipesProps {
 
 const get_progress_color_t = (cur_t: number, max_t: number) => {
     if (cur_t < max_t) {
-        return "bg-green-700";
+        return "bg-green-600";
     }
     else if (cur_t < max_t + 3) {
         return "bg-orange-600";
@@ -42,14 +42,13 @@ export const InfoPipes = ({
 
     const children = pipes.map((data) => (
         <ul className="grid gap-2">
-            <div className="font-medium">{useQuery(api.sensor.get, { sensorId: data[4] })?.map(({ description }) => description) || ""}</div>
+            <div className="font-medium">{useQuery(api.reactor.get, { sensorId: data[4] })?.map(({ description }) => description) || ""}</div>
             <li className="flex items-center justify-between">
                 <span className="text-muted-foreground">Temperature (K)</span>
             </li>
             <li className="flex items-center justify-between text-muted-foreground">
                 <span>{data[0]}</span>
                 <Progress className="w-4/5" value={(data[0] - data[2] + 18) * 100 / 24} color={get_progress_color_p(data[1], data[3])} />
-                {/* <progress value={(data[0] - data[2] + 18) * 100 / 24} max={100} className="rounded-full" /> */}
             </li>
             <li className="flex items-center justify-between text-muted-foreground">
                 <span className="text-muted-foreground">Pressure (atm)</span>
@@ -59,11 +58,11 @@ export const InfoPipes = ({
                 <Progress className="w-4/5" value={(data[1]) * 100 / 2.5} color={get_progress_color_p(data[1], data[3])} />
             </li>
             <li className="flex items-center justify-between text-muted-foreground">
-                <span className="text-muted-foreground">Flow rate (kg/s)</span>
+                <span className="text-muted-foreground">Flow rate (m<sup>3</sup>/s)</span>
             </li>
             <li className="flex items-center justify-between mb-2 text-muted-foreground">
                 <span>{rate}</span>
-                <Progress className="w-4/5" value={rate * 5} color="bg-green-600" />
+                <Progress className="w-4/5" value={rate * 160} color="bg-green-600" />
             </li>
         </ul>
     )

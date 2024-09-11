@@ -5,7 +5,7 @@ export default defineSchema({
   sensors: defineTable({
     description: v.string(),
     sensor_id: v.float64(),
-    state: v.optional(v.float64()),
+    state: v.float64(),
     status: v.float64(),
   })
     .index("by_sensor_id", ["sensor_id"]),
@@ -18,5 +18,9 @@ export default defineSchema({
     rate: v.float64(),
     t: v.float64(),
   }),
-
+  system: defineTable({
+    capacity: v.float64(),
+    handled: v.float64(),
+    profit: v.float64(),
+  }),
 });

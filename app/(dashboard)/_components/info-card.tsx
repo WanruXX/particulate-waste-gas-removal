@@ -18,26 +18,26 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 
-import { Copy, Truck, MoreVertical, ChevronLeft, ChevronRight, CreditCard, Download, Circle } from "lucide-react";
+import { MoreVertical, Download, Circle } from "lucide-react";
 import React, { useEffect } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { SensorStatus } from "./types";
+import { getStateColor, getStateText, Goodness, State } from "./types";
 import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
 import { InfoPipes } from "./info-pipes";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 
 
 interface InfoCardProps {
-    selected_sensor: number,
+    selected_reactor: number,
+    goodness: Goodness
 };
 
 export const InfoCard = ({
-    selected_sensor,
+    selected_reactor,
+    goodness,
 }: InfoCardProps) => {
-    const is_hidden = selected_sensor >= 0 ? "" : "hidden";
-    const [status, description] = useQuery(api.sensor.get, { sensorId: selected_sensor })?.map(({ status, description }) => [status, description])[0] || [0, ""];
+    const is_hidden = selected_reactor >= 0 ? "" : "hidden";
 
     const sensor_about = ["The waste heat recovery device is used to absorb high temperature coal particles and coking dust carrying raw gas generated in the production process, and to conduct cooling treatment to lower the temperature to room temperature so as to obtain ambient temperature coal particles and coking dust containing raw gas.",
         "The gas hydrate primary dust removal tower is used for gas hydrate generation and particulate coagulation; the ambient temperature coal particles and coking dust carrying raw gas are passed into a pool for humidification, and at the same time, the R134a gas is introduced. At 1-2 atm and 2-13℃, the waste gases that can produce gas hydrate in the raw gas will preferentially generate gas hydrate on the surface of coal particles and coking dust so as to form clathrates with a larger size, and the particulates are sedimented by increasing the overall size; and part of the soluble heavy metal ions and inorganic salt ions adsorbed on the surface of coal particles and coking dust are dissolved in water.",
@@ -49,29 +49,12 @@ export const InfoCard = ({
         "The low temperature fractionation device is used to separate the waste gases obtained from the gas-solid separation tower from the R134a; when the temperature drops to below the boiling point of R134a, R134a is liquefied, and the other gases are still kept in the gas phase state; the waste gases are subjected to centralized collection to be directly recovered and used as chemical materials so as to prevent exhaust into the atmosphere to pollute the environment; and the separated R134a is recovered and refiled into the gas hydrate primary dust removal tower for reuse to realize the resourceful treatment of materials."
     ];
 
-    const inputs = useQuery(api.sensor.getAsOuput, { sensorId: selected_sensor })?.map(({ t, pressure, max_t, min_p, input }) => [t, pressure, max_t, min_p, input]) || [];
-    const outputs = useQuery(api.sensor.getAsInput, { sensorId: selected_sensor })?.map(({ t, pressure, max_t, min_p, output }) => [t, pressure, max_t, min_p, output]) || [];
-    let icon_color = "#3fd46e";
-    let icon_info = "Healthy"
-    if (status == SensorStatus.on) {
-        for (const out of outputs) {
-            if (out[0] > out[2] + 3) {
-                icon_color = "#d42724";
-                break;
-            }
-            if (out[1] < out[3] - 0.2) {
-                icon_color = "#d42724";
-                break;
-            }
-            if (out[0] > out[2] || out[1] < out[3]) {
-                icon_color = "#e36a36";
-            }
-        }
-    }
-    else {
-        icon_color = "#666666";
-        icon_info = "Not running"
-    }
+    const reactor_data = useQuery(api.reactor.get, { sensorId: selected_reactor });
+    const state: State = reactor_data?.map(({ state }) => state)[0] || State.off;
+    const description = reactor_data?.map(({ description }) => description)[0] || "";
+
+    const inputs = useQuery(api.reactor.getAsOuput, { sensorId: selected_reactor })?.map(({ t, pressure, max_t, min_p, input }) => [t, pressure, max_t, min_p, input]) || [];
+    const outputs = useQuery(api.reactor.getAsInput, { sensorId: selected_reactor })?.map(({ t, pressure, max_t, min_p, output }) => [t, pressure, max_t, min_p, output]) || [];
 
     const total_mass = (Math.random() * 100 + 1500).toPrecision(6);
 
@@ -85,8 +68,8 @@ export const InfoCard = ({
                                 {description}
                             </CardTitle>
                             <CardDescription className="mt-4 flex items-center gap-2">
-                                <Circle fill={icon_color} stroke="none" size={18} id="icon" />
-                                <Label htmlFor="icon">{icon_info}</Label>
+                                <Circle fill={getStateColor(state, goodness)} stroke="none" size={18} id="icon" />
+                                <Label htmlFor="icon">{getStateText(state, goodness)}</Label>
                             </CardDescription>
                         </div>
                         <div className="ml-auto flex items-center gap-1">
@@ -113,24 +96,24 @@ export const InfoCard = ({
                         </div>
                     </CardHeader>
                     <CardContent className="p-6 text-sm">
-
-                        <InfoPipes title="Input" pipes={inputs} />
-                        <Separator className="my-4" />
-                        <InfoPipes title="Output" pipes={outputs} />
-                        <Separator className="my-4" />
-                        <div className="grid gap-3">
-                            <div className="font-bold">Total mass in the reactor</div>
-                            <li className="flex items-center justify-between">
-                                {/* <span className="text-muted-foreground">(~kg)</span> */}
-                                <span className="text-muted-foreground" suppressHydrationWarning>{total_mass} (~kg)</span>
-                            </li>
+                        <div className={`${state == State.on ? "" : "hidden"}`}>
+                            <InfoPipes title="Input" pipes={inputs} />
+                            <Separator className="my-4" />
+                            <InfoPipes title="Output" pipes={outputs} />
+                            <Separator className="my-4" />
+                            <div className="grid gap-3">
+                                <div className="font-bold">Total mass in the reactor</div>
+                                <li className="flex items-center justify-between">
+                                    <span className="text-muted-foreground" suppressHydrationWarning>{total_mass} (~kg)</span>
+                                </li>
+                            </div>
+                            <Separator className="my-4" />
                         </div>
-                        <Separator className="my-4" />
                         <div className="grid gap-4">
                             <div className="grid auto-rows-max gap-3">
                                 <div className="font-semibold">About</div>
                                 <div className="text-muted-foreground">
-                                    {sensor_about[selected_sensor]}
+                                    {sensor_about[selected_reactor]}
                                 </div>
                             </div>
                         </div>
@@ -141,7 +124,6 @@ export const InfoCard = ({
                         </div>
                     </CardFooter>
                 </Card>
-               
             </ScrollArea>
         </div>
     );

@@ -3,10 +3,14 @@
 
 import { TabsContent, } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { SensorNode } from "./sensor-node";
+import { SensorNode } from "./reactor-node";
 import Image from "next/image";
 import { useState } from "react";
 import { Droplet, Droplets } from "lucide-react";
+import { SvgWaterSupply } from "./icons/svg-water-supply";
+import { SvgDollar } from "./icons/svg-dollar";
+import { SvgOilExtraction } from "./icons/svg-oil-extraction";
+import { SvgPowerPlant } from "./icons/svg-pwer-plant";
 
 interface AnimatedDashPrps {
     x1: number,
@@ -52,35 +56,27 @@ const AnimatedPolyline = ({
 
 interface GraphViewProps {
     selected_sensor: number,
-    set_selected_sensor: (sensor_id: number) => void
+    setSelectedReactor: (sensor_id: number) => void,
+    setGoodnessForReactorId: (reactor_id: number, goodness_code: number) => void
 };
 
 export const GraphView = ({
     selected_sensor,
-    set_selected_sensor
+    setSelectedReactor,
+    setGoodnessForReactorId
 }: GraphViewProps) => {
-
-    const [goodness0, set_goodness0] = useState(0);
-    const [goodness1, set_goodness1] = useState(0);
-    const [goodness2, set_goodness2] = useState(0);
-    const [goodness3, set_goodness3] = useState(0);
-    const [goodness4, set_goodness4] = useState(0);
-    const [goodness5, set_goodness5] = useState(0);
-    const [goodness6, set_goodness6] = useState(0);
-    const [goodness7, set_goodness7] = useState(0);
-
     return (
         <TabsContent value="Graph view">
             <ScrollArea >
                 <div className="relative h-[1200px] w-[1000px] rounded-md border p-4">
-                    <SensorNode sensor_id={0} position="left-[20px] top-[200px]" selected_sensor={selected_sensor} set_selected_sensor={set_selected_sensor} set_goodness={set_goodness0} />
-                    <SensorNode sensor_id={1} position="left-[218px] top-[205px]" selected_sensor={selected_sensor} set_selected_sensor={set_selected_sensor} set_goodness={set_goodness1} />
-                    <SensorNode sensor_id={2} position="left-[220px] top-[420px]" selected_sensor={selected_sensor} set_selected_sensor={set_selected_sensor} set_goodness={set_goodness2} />
-                    <SensorNode sensor_id={3} position="left-[220px] top-[640px]" selected_sensor={selected_sensor} set_selected_sensor={set_selected_sensor} set_goodness={set_goodness3} />
-                    <SensorNode sensor_id={4} position="left-[220px] top-[860px]" selected_sensor={selected_sensor} set_selected_sensor={set_selected_sensor} set_goodness={set_goodness4} />
-                    <SensorNode sensor_id={5} position="left-[420px] top-[420px]" selected_sensor={selected_sensor} set_selected_sensor={set_selected_sensor} set_goodness={set_goodness5} />
-                    <SensorNode sensor_id={6} position="left-[640px] top-[420px]" selected_sensor={selected_sensor} set_selected_sensor={set_selected_sensor} set_goodness={set_goodness6} />
-                    <SensorNode sensor_id={7} position="left-[640px] top-[200px]" selected_sensor={selected_sensor} set_selected_sensor={set_selected_sensor} set_goodness={set_goodness7} />
+                    <SensorNode sensor_id={0} position="left-[20px] top-[200px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
+                    <SensorNode sensor_id={1} position="left-[218px] top-[205px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
+                    <SensorNode sensor_id={2} position="left-[220px] top-[420px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
+                    <SensorNode sensor_id={3} position="left-[220px] top-[640px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
+                    <SensorNode sensor_id={4} position="left-[220px] top-[860px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
+                    <SensorNode sensor_id={5} position="left-[420px] top-[420px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
+                    <SensorNode sensor_id={6} position="left-[640px] top-[420px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
+                    <SensorNode sensor_id={7} position="left-[640px] top-[200px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
                     <Image
                         src="/smoke-icon.svg"
                         alt="input waste gas"
@@ -101,15 +97,21 @@ export const GraphView = ({
                     <Image
                         src="/water-containing-particulates.png"
                         alt="water-containing particulates"
+                        width={90}
+                        height={90}
+                        className="absolute left-[656px] top-[660px]" />
+                    <SvgWaterSupply fill="#347deb" className="absolute left-[660px] top-[860px]" />
+                    <Image
+                        src="/output-gas.svg"
+                        alt="output waste gas"
                         width={80}
                         height={80}
-                        className="absolute left-[870px] top-[440px]" />
-                    <Image
-                        src="/gas-output.svg"
-                        alt="output waste gas"
-                        width={70}
-                        height={70}
-                        className="absolute left-[870px] top-[230px]" />
+                        className="absolute left-[860px] top-[225px]" />
+                    <SvgPowerPlant fill="#e67732" className="absolute left-[865px] top-[35px]" />
+                    <SvgOilExtraction fill="#87601b" className="absolute left-[860px] top-[430px]" />
+                    <Image src="/coin.svg" alt="coin1" width={30} height={30} className="absolute left-[850px] top-[485px]" />
+                    <Image src="/coin.svg" alt="coin2" width={30} height={30} className="absolute left-[850px] top-[90px]" />
+                    <Image src="/coin.svg" alt="coin3" width={30} height={30} className="absolute left-[643px] top-[900px]" />
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
                         <AnimatedDash x1={120} y1={240} x2={205} y2={240} />
                         <AnimatedDash x1={260} y1={340} x2={260} y2={400} />
@@ -123,8 +125,11 @@ export const GraphView = ({
                         <AnimatedDash x1={65} y1={100} x2={65} y2={180} />
                         <AnimatedDash x1={260} y1={90} x2={260} y2={180} />
                         <AnimatedDash x1={260} y1={1000} x2={260} y2={1080} />
-                        <AnimatedDash x1={735} y1={470} x2={850} y2={470} />
-                        <AnimatedDash x1={735} y1={250} x2={850} y2={250} />
+                        <AnimatedDash x1={735} y1={250} x2={830} y2={250} />
+                        <AnimatedDash x1={682} y1={555} x2={682} y2={640} />
+                        <AnimatedDash x1={682} y1={740} x2={682} y2={825} />
+                        <AnimatedDash x1={882} y1={190} x2={882} y2={100} />
+                        <AnimatedDash x1={882} y1={310} x2={882} y2={400} />
                     </svg>
                 </div>
             </ScrollArea>
