@@ -92,3 +92,9 @@ body,
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}

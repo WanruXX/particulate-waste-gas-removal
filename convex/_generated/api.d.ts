@@ -13,7 +13,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as sensor from "../sensor.js";
+import type * as reactor from "../reactor.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -24,7 +24,7 @@ import type * as sensor from "../sensor.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  sensor: typeof sensor;
+  reactor: typeof reactor;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
