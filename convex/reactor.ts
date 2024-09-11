@@ -27,6 +27,20 @@ export const getNumInState = query({
   },
 });
 
+export const getNumInStates = query({
+  handler: async (ctx) => {
+    const userPurchases = await ctx.db.query("sensors").collect();
+
+    return userPurchases.reduce(
+      (counts, { state }) => ({
+        ...counts,
+        [state]: counts[state] ?? 0 + 1,
+      }),
+      {} as Record<string, number>,
+    );
+  },
+});
+
 export const updateState = mutation({
   args: {
     sensorId: v.float64(),

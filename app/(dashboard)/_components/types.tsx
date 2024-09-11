@@ -37,3 +37,25 @@ export function getStateColor(state: State, goodness: Goodness) {
         return "#35a6db";
     }
 };
+
+export function getStateText(state: State, goodness: Goodness) {
+    if (state == State.on) {
+        switch (goodness) {
+            case Goodness.healthy:
+                return "Healthy";
+            case Goodness.warning:
+                return "Warn";
+            default:
+                return "Error";
+        }
+    }
+    else if (state == State.off) {
+        return "Not running";
+    }
+    else if (state == State.starting){
+        return "Starting";
+    }
+    else{
+        return "Shutting down";
+    }
+};

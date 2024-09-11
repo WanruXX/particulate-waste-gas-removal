@@ -6,7 +6,7 @@ import { api } from "../../convex/_generated/api";
 import { NavBar } from "./_components/navbar";
 import { SearchInput } from "./_components/search-input";
 import { UserAvatar } from "./_components/user-avatar";
-import { StatusCards } from "./_components/status-cards";
+import { HearderCards } from "./_components/header-cards";
 import { ViewTabs } from "./_components/view-tabs";
 import { Button } from "@/components/ui/button";
 import { InfoCard } from "./_components/info-card";
@@ -18,32 +18,15 @@ export const description =
 
 export default function Dashboard() {
 
-  const [selected_sensor, setSelectedReactor] = React.useState(-1);
+  const [selected_reactor, setSelectedReactor] = React.useState(-1);
 
   const [goodness, setGoodnessAll] = React.useState([0, 0, 0, 0, 0, 0, 0, 0]);
   const setGoodnessForReactorId = (reactor_id: number, goodness_code: number) => {
     let new_goodness = goodness;
     new_goodness[reactor_id] = goodness_code;
+    console.log(new_goodness);
     setGoodnessAll(new_goodness);
   };
-
-  const system_status = () => {
-    if (useQuery(api.reactor.getNumInState, { status: State.on }) == 8) {
-      return State.on;
-    }
-    else if (useQuery(api.reactor.getNumInState, { status: State.off }) == 8) {
-      return State.off;
-    }
-    else {
-      const num_starting = useQuery(api.reactor.getNumInState, { status: State.starting });
-      if (num_starting ? num_starting > 0 : false) {
-        return State.starting;
-      }
-      else {
-        return State.shuttingDown;
-      }
-    }
-  }
 
   const reactor_data = useQuery(api.reactor.getAllReactors);
   const [state, description] = reactor_data?.map(({ state, description }) => [state, description])[0] || [State.off, ""];
@@ -63,9 +46,9 @@ export default function Dashboard() {
       </header>
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
         <div className="h-[1450px] grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
-          <StatusCards />
-          <ViewTabs selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
-          <InfoCard selected_sensor={selected_sensor} />
+          <HearderCards  goodness={goodness}/>
+          <ViewTabs selected_sensor={selected_reactor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
+          <InfoCard selected_reactor={selected_reactor}  goodness={goodness[selected_reactor]}/>
         </div>
 
       </main >

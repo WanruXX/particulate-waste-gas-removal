@@ -11,13 +11,40 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { useMutation, useQuery } from "convex/react";
-import { State } from "./types";
+import { getGoodnessColor, getStateColor, State } from "./types";
 import { api } from "@/convex/_generated/api";
 import { stringify } from "querystring";
 import { Circle } from "lucide-react";
 import { Label } from "@/components/ui/label";
 
-export const StatusCards = () => {
+interface HearderCardsProps{
+    goodness: number[],
+};
+
+export const HearderCards = ({
+    goodness
+}: HearderCardsProps) => {
+
+    const system_status = () => {
+        if (useQuery(api.reactor.getNumInState, { status: State.on }) == 8) {
+          return State.on;
+        }
+        else if (useQuery(api.reactor.getNumInState, { status: State.off }) == 8) {
+          return State.off;
+        }
+        else {
+          const num_starting = useQuery(api.reactor.getNumInState, { status: State.starting });
+          if (num_starting ? num_starting > 0 : false) {
+            return State.starting;
+          }
+          else {
+            return State.shuttingDown;
+          }
+        }
+      }
+
+      const data = useQuery(api.reactor.getNumInStates);
+      console.log("data", data);
 
     const mutateSensorStatus = useMutation(api.reactor.updateState)
     const startSystem = () => {
@@ -31,48 +58,12 @@ export const StatusCards = () => {
         }
     };
 
-    // const num_disconnect = (useQuery(api.sensor.getInStatus, { status: SensorStatus.Disconnected }))?.length || 0;
-    // const num_connecting = (useQuery(api.sensor.getInStatus, { status: SensorStatus.Connecting }))?.length || 0;
-    // const num_connected = (useQuery(api.sensor.getInStatus, { status: SensorStatus.Connected }))?.length || 0;
-    // const num_error = (useQuery(api.sensor.getInStatus, { status: SensorStatus.Error }))?.length || 0;
+    // let status_text = "";
+    // let button_text = "";
+    // let button_disabled = false;
 
-    // const sensor_finished = useQuery(api.sensor.getInStatus, { status: SensorStatus.Finnished });
-    // const num_finished = sensor_finished?.length || 0;
-    // const running_sensor_id = num_finished;
-    // const current_step = useQuery(api.sensor.get, { sensorId: running_sensor_id });
-    // const current_step_progress = current_step?.map(({ progress }) => progress)[0] || 0;
-    // const overall_progress = num_finished * 100/ 8 + current_step_progress / 8;
-
-    let status_text = "";
-    let button_text = "";
-    let button_disabled = false;
-    // if (num_disconnect > 0) {
-    //     status_text = "System is disconnected."
-    //     button_text = "Connect now";
-    //     button_disabled = false;
-    // } else if (num_connecting > 0) {
-    //     status_text = "Trying to connect..."
-    //     button_text = "Connect now";
-    //     button_disabled = true;
-    // } else if (num_connected === 8) {
-    //     status_text = "System is connected and ready to run."
-    //     button_text = "Run now";
-    //     button_disabled = false;
-    // } else if (num_finished === 8) {
-    //     status_text = "System finished running."
-    //     button_text = "Rerun";
-    //     button_disabled = false;
-    // }
-    // else if (num_finished < 8) {
-    //     status_text = "System is running...";
-    //     button_text = "Run now";
-    //     button_disabled = true;
-    // }
-    // else {
-    //     status_text = "Unknown."
-    //     button_text = "Connect now";
-    //     button_disabled = false;
-    // }
+    // // console.log(goodness);
+    // const system_goodness = Math.max(...goodness);
 
 
     return (
@@ -94,11 +85,11 @@ export const StatusCards = () => {
                     </div>
                 </CardContent>
             </Card>
-            <Card x-chunk="dashboard-05-chunk-1">
+            {/* <Card x-chunk="dashboard-05-chunk-1">
                 <CardHeader className="pb-2">
                     <CardTitle className="text-xl">Status</CardTitle>
                     <CardDescription className="flex items-center gap-2">
-                        <Circle fill="#3fd46e" stroke="none" size={18} id="icon" />
+                        <Circle fill={getStateColor(system_status(), system_goodness)} stroke="none" size={18} id="icon" />
                         <Label htmlFor="icon">Healthy</Label>
                     </CardDescription>
                 </CardHeader>
@@ -110,7 +101,7 @@ export const StatusCards = () => {
                 <CardFooter>
                     nothing
                 </CardFooter>
-            </Card>
+            </Card> */}
             {/* <Card x-chunk="dashboard-05-chunk-2">
                 <CardHeader className="pb-2">
                     <CardDescription>Overall progress</CardDescription>

@@ -30,8 +30,8 @@ export const SensorNode = ({
     setGoodnessForReactorId,
 }: SensorNodeProps) => {
     const reactor_data = useQuery(api.reactor.get, { sensorId: sensor_id });
-    const state: State = reactor_data?.map(({ state }) => state)[0] || State.off;
-    const description = reactor_data?.map(({ description }) => description)[0] || "";
+    const state: State = reactor_data?.map(({ state }) => state)[0] ?? State.off;
+    const description = reactor_data?.map(({ description }) => description)[0] ?? "";
 
     let icon_class = "w-[100px] h-[100px] items-center justify-center m-auto";
     if (state == State.starting || state == State.shuttingDown) {
