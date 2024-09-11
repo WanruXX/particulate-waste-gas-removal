@@ -19,7 +19,7 @@
 # misc
 .DS_Store
 *.pem
-script/my-app//venv
+script/my-app/venv
 
 # debug
 npm-debug.log*

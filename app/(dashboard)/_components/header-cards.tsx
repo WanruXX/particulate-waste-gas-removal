@@ -27,7 +27,7 @@ interface HearderCardsProps {
 export const HearderCards = ({
     goodness
 }: HearderCardsProps) => {
-    const data = useQuery(api.reactor.getNumInStates) || {};
+    const data = useQuery(api.reactor.countNumInState) || {};
 
     const get_system_state = () => {
         if (data[State.on] == 8) {
@@ -46,15 +46,15 @@ export const HearderCards = ({
     const system_state = get_system_state();
     const system_goodness = Math.max(...goodness);
 
-    const mutateSensorStatus = useMutation(api.reactor.updateState)
+    const mutateReactorState = useMutation(api.reactor.updateState)
     const startSystem = () => {
         for (let i = 0; i < 8; i++) {
-            mutateSensorStatus({ sensorId: i, newStatusCode: State.starting });
+            mutateReactorState({ sensorId: i, newState: State.starting });
         }
     };
     const shutdownSystem = () => {
         for (let i = 1; i < 8; i++) {
-            mutateSensorStatus({ sensorId: i, newStatusCode: State.shuttingDown });
+            mutateReactorState({ sensorId: i, newState: State.shuttingDown });
         }
     };
 

@@ -16,7 +16,7 @@ export const getAllReactors = query({
   },
 });
 
-export const getNumInStates = query({
+export const countNumInState = query({
   handler: async (ctx) => {
     const userPurchases = await ctx.db.query("sensors").collect();
 
@@ -33,12 +33,13 @@ export const getNumInStates = query({
 export const updateState = mutation({
   args: {
     sensorId: v.float64(),
-    newStatusCode: v.float64(),
+    newState: v.float64(),
   },
   handler: async (ctx, args) => {
-    const sensors = await ctx.db.query("sensors").withIndex("by_sensor_id", (q) => q.eq("sensor_id", args.sensorId)).collect();
-    const id = sensors?.map(({ _id }) => _id)[0];
-    await ctx.db.patch(id, { status: args.newStatusCode });
+    const reactor = await ctx.db.query("sensors").filter((q) => q.eq(q.field("sensor_id"), args.sensorId)).first();
+    if (reactor != undefined) {
+      await ctx.db.patch(reactor._id, { state: args.newState });
+    }
   },
 });
 

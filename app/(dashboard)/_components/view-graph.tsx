@@ -100,7 +100,7 @@ export const GraphView = ({
                         width={90}
                         height={90}
                         className="absolute left-[656px] top-[660px]" />
-                    <SvgWaterSupply fill="#4abced" className="absolute left-[660px] top-[860px]" />
+                    <SvgWaterSupply fill="#347deb" className="absolute left-[660px] top-[860px]" />
                     <Image
                         src="/output-gas.svg"
                         alt="output waste gas"

@@ -58,11 +58,11 @@ export const InfoPipes = ({
                 <Progress className="w-4/5" value={(data[1]) * 100 / 2.5} color={get_progress_color_p(data[1], data[3])} />
             </li>
             <li className="flex items-center justify-between text-muted-foreground">
-                <span className="text-muted-foreground">Flow rate (kg/s)</span>
+                <span className="text-muted-foreground">Flow rate (m<sup>3</sup>/s)</span>
             </li>
             <li className="flex items-center justify-between mb-2 text-muted-foreground">
                 <span>{rate}</span>
-                <Progress className="w-4/5" value={rate * 5} color="bg-green-600" />
+                <Progress className="w-4/5" value={rate * 160} color="bg-green-600" />
             </li>
         </ul>
     )

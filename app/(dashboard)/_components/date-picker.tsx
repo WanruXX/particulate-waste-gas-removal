@@ -56,7 +56,7 @@ export function CalendarForm({
                   <FormControl>
                     <Button
                       variant={"outline"}
-                      className={cn("w-[180px] text-left font-normal text-xs", !field.value && "text-muted-foreground"
+                      className={cn("w-[180px] text-left font-normal text-xs", initilized_processed && !field.value && "text-muted-foreground"
                       )}
                       onClick={() => { if (!initilized_processed) { setDate(new Date()); setInitProcessed(true) } }}
                     >
