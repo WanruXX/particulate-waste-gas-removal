@@ -26,7 +26,7 @@ export default function Home() {
         </Link>
       </div>
       <div className="absolute right-4 top-4 hidden lg:inline-block">
-        <Link href="/" className="text-black text-md pr-6 hover:text-rose-400">
+        <Link href="/" className="text-black text-md pr-7 hover:text-rose-400">
           Tools
         </Link>
         <Link href="/" className="text-black text-md pr-6 hover:text-rose-400">
