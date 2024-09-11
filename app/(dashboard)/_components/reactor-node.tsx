@@ -1,6 +1,6 @@
 "use client"
 
-import { StateCode } from "./types";
+import { getGoodnessColor, getStateColor, Goodness, State } from "./types";
 import { Activity, Cloud, CloudOff, PowerOff } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { useQuery } from "convex/react";
@@ -18,94 +18,81 @@ interface SensorNodeProps {
     sensor_id: number,
     position: string,
     selected_sensor: number,
-    set_selected_sensor: (sensor_id: number) => void,
-    set_goodness: (goodness: number) => void,
+    setSelectedReactor: (sensor_id: number) => void,
+    setGoodnessForReactorId: (reactor_id: number, goodness_code: number) => void
 };
 
 export const SensorNode = ({
     sensor_id,
     position,
     selected_sensor,
-    set_selected_sensor,
-    set_goodness,
+    setSelectedReactor,
+    setGoodnessForReactorId,
 }: SensorNodeProps) => {
-    const sensor_data = useQuery(api.reactor.get, { sensorId: sensor_id });
-    const [status, description] = sensor_data?.map(({ status, description }) => [status, description])[0] || [StateCode.off, ""];
-
+    const reactor_data = useQuery(api.reactor.get, { sensorId: sensor_id });
+    const state: State = reactor_data?.map(({ state }) => state)[0] || State.off;
+    const description = reactor_data?.map(({ description }) => description)[0] || "";
 
     let icon_class = "w-[100px] h-[100px] items-center justify-center m-auto";
-    if (status == StateCode.starting || status == StateCode.shuttingDown) {
+    if (state == State.starting || state == State.shuttingDown) {
         icon_class += " animate-pulse duration-1000";
     }
 
-
-    let icon_color = "#b8a4a4";
-    if (status == StateCode.starting || status == StateCode.shuttingDown) {
-        icon_color = "#35a6db";
-    } else if (status == StateCode.on) {
-        icon_color = "#3fd46e";
-        const outputs = useQuery(api.reactor.getAsInput, { sensorId: selected_sensor })?.map(({ t, pressure, max_t, min_p }) => [t, pressure, max_t, min_p]) || [];
-
-        let good = 0;
-        for (const output of outputs) {
-            if (output[0] > output[2] + 3) {
-                good = 2;
-                break;
+    const get_goodness = (sensors: number[][]) => {
+        let good = Goodness.healthy;
+        for (const sensor of sensors) {
+            if (sensor[0] > sensor[2] + 3) {
+                return Goodness.error;
             }
-            if (output[1] < output[3] - 0.2) {
-                good = 2;
-                break;
+            if (sensor[1] < sensor[3] - 0.2) {
+                return Goodness.error;
             }
-            if (output[0] > output[2] || output[1] < output[3]) {
-                good = 1;
+            if (sensor[0] > sensor[2] || sensor[1] < sensor[3]) {
+                good = Goodness.warning;
             }
         }
-
-        if (good == 1) {
-            icon_color = "#e36a36";
-        }
-        else if (good == 2) {
-            icon_color = "#d42724";
-        }
-        set_goodness(good);
-    }
+        return good;
+    };
+    const outputs = useQuery(api.reactor.getAsInput, { sensorId: selected_sensor })?.map(({ t, pressure, max_t, min_p }) => [t, pressure, max_t, min_p]) || [];
+    const goodness = get_goodness(outputs);
+    setGoodnessForReactorId(sensor_id, goodness);
 
     const handleClick = () => {
         if (selected_sensor == sensor_id) {
-            set_selected_sensor(-1);
+            setSelectedReactor(-1);
         }
         else {
-            set_selected_sensor(sensor_id);
+            setSelectedReactor(sensor_id);
         }
     };
 
     let sensor_icon: ReactNode;
     switch (sensor_id) {
         case 0:
-            sensor_icon = <SvgHeatRecover fill={icon_color} className={icon_class} />
+            sensor_icon = <SvgHeatRecover fill={getStateColor(state, goodness)} className={icon_class} />
             break;
         case 1:
         case 3:
-            sensor_icon = <SvgDustRemoval fill={icon_color} className={icon_class} />
+            sensor_icon = <SvgDustRemoval fill={getStateColor(state, goodness)} className={icon_class} />
             break;
         case 2:
         case 4:
-            sensor_icon = <SvgLiquidSolidSeparation fill={icon_color} className={icon_class} />
+            sensor_icon = <SvgLiquidSolidSeparation fill={getStateColor(state, goodness)} className={icon_class} />
             break;
         case 5:
-            sensor_icon = <SvgGasHydrate fill={icon_color} className={icon_class} />
+            sensor_icon = <SvgGasHydrate fill={getStateColor(state, goodness)} className={icon_class} />
             break;
         case 6:
-            sensor_icon = <SvgGasSolid fill={icon_color} className={icon_class} />
+            sensor_icon = <SvgGasSolid fill={getStateColor(state, goodness)} className={icon_class} />
             break;
         case 7:
-            sensor_icon = <SvglowTempFrac fill={icon_color} className={icon_class} />
+            sensor_icon = <SvglowTempFrac fill={getStateColor(state, goodness)} className={icon_class} />
             break;
         default:
-            sensor_icon = <SvgBottle fill={icon_color} className={icon_class} />
+            sensor_icon = <SvgBottle fill={getStateColor(state, goodness)} className={icon_class} />
     };
 
-    if (status === StateCode.off) {
+    if (state === State.off) {
         return (
             <div
                 className={`absolute ${position} w-[120px] h-[144px] flex flex-col bg-transparent hover:cursor-pointer`}
@@ -121,11 +108,11 @@ export const SensorNode = ({
             </div>
         );
     }
-    else if (status === StateCode.on) {
+    else if (state === State.on) {
         return (
             <div
                 className={`absolute ${position} w-[120px] h-[144px] flex flex-col bg-transparent hover:cursor-pointer`}
-                onClick={() => set_selected_sensor(sensor_id)}>
+                onClick={() => setSelectedReactor(sensor_id)}>
                 {sensor_icon}
                 <div className="relative text-xs flex">
                     <Activity id="status"
@@ -141,7 +128,7 @@ export const SensorNode = ({
         return (
             <div
                 className={`absolute ${position} w-[120px] h-[144px] flex flex-col bg-transparent hover:cursor-pointer`}
-                onClick={() => { set_selected_sensor(sensor_id) }}>
+                onClick={() => { setSelectedReactor(sensor_id) }}>
                 {sensor_icon}
                 <div className="relative text-xs flex">
                     <Spinner

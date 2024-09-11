@@ -56,35 +56,27 @@ const AnimatedPolyline = ({
 
 interface GraphViewProps {
     selected_sensor: number,
-    set_selected_sensor: (sensor_id: number) => void
+    setSelectedReactor: (sensor_id: number) => void,
+    setGoodnessForReactorId: (reactor_id: number, goodness_code: number) => void
 };
 
 export const GraphView = ({
     selected_sensor,
-    set_selected_sensor
+    setSelectedReactor,
+    setGoodnessForReactorId
 }: GraphViewProps) => {
-
-    const [goodness0, set_goodness0] = useState(0);
-    const [goodness1, set_goodness1] = useState(0);
-    const [goodness2, set_goodness2] = useState(0);
-    const [goodness3, set_goodness3] = useState(0);
-    const [goodness4, set_goodness4] = useState(0);
-    const [goodness5, set_goodness5] = useState(0);
-    const [goodness6, set_goodness6] = useState(0);
-    const [goodness7, set_goodness7] = useState(0);
-
     return (
         <TabsContent value="Graph view">
             <ScrollArea >
                 <div className="relative h-[1200px] w-[1000px] rounded-md border p-4">
-                    <SensorNode sensor_id={0} position="left-[20px] top-[200px]" selected_sensor={selected_sensor} set_selected_sensor={set_selected_sensor} set_goodness={set_goodness0} />
-                    <SensorNode sensor_id={1} position="left-[218px] top-[205px]" selected_sensor={selected_sensor} set_selected_sensor={set_selected_sensor} set_goodness={set_goodness1} />
-                    <SensorNode sensor_id={2} position="left-[220px] top-[420px]" selected_sensor={selected_sensor} set_selected_sensor={set_selected_sensor} set_goodness={set_goodness2} />
-                    <SensorNode sensor_id={3} position="left-[220px] top-[640px]" selected_sensor={selected_sensor} set_selected_sensor={set_selected_sensor} set_goodness={set_goodness3} />
-                    <SensorNode sensor_id={4} position="left-[220px] top-[860px]" selected_sensor={selected_sensor} set_selected_sensor={set_selected_sensor} set_goodness={set_goodness4} />
-                    <SensorNode sensor_id={5} position="left-[420px] top-[420px]" selected_sensor={selected_sensor} set_selected_sensor={set_selected_sensor} set_goodness={set_goodness5} />
-                    <SensorNode sensor_id={6} position="left-[640px] top-[420px]" selected_sensor={selected_sensor} set_selected_sensor={set_selected_sensor} set_goodness={set_goodness6} />
-                    <SensorNode sensor_id={7} position="left-[640px] top-[200px]" selected_sensor={selected_sensor} set_selected_sensor={set_selected_sensor} set_goodness={set_goodness7} />
+                    <SensorNode sensor_id={0} position="left-[20px] top-[200px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
+                    <SensorNode sensor_id={1} position="left-[218px] top-[205px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
+                    <SensorNode sensor_id={2} position="left-[220px] top-[420px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
+                    <SensorNode sensor_id={3} position="left-[220px] top-[640px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
+                    <SensorNode sensor_id={4} position="left-[220px] top-[860px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
+                    <SensorNode sensor_id={5} position="left-[420px] top-[420px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
+                    <SensorNode sensor_id={6} position="left-[640px] top-[420px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
+                    <SensorNode sensor_id={7} position="left-[640px] top-[200px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
                     <Image
                         src="/smoke-icon.svg"
                         alt="input waste gas"

@@ -22,13 +22,14 @@ import { TimelineView } from "./view-timeline";
 
 interface ViewTabsProps {
     selected_sensor: number,
-    set_selected_sensor: (sensor_id: number) => void
+    setSelectedReactor: (sensor_id: number) => void,
+    setGoodnessForReactorId: (reactor_id: number, goodness_code: number) => void
 };
 
 export const ViewTabs = ({
     selected_sensor,
-    set_selected_sensor
-
+    setSelectedReactor,
+    setGoodnessForReactorId
 }: ViewTabsProps) => {
     return (
         <Tabs defaultValue="Graph view" className="h-[1300px]">
@@ -74,7 +75,7 @@ export const ViewTabs = ({
                     </Button>
                 </div>
             </div>
-            <GraphView selected_sensor={selected_sensor} set_selected_sensor={set_selected_sensor} />
+            <GraphView selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
             <TableView />
             <TimelineView />
         </Tabs>

@@ -22,7 +22,7 @@ import { Copy, Truck, MoreVertical, ChevronLeft, ChevronRight, CreditCard, Downl
 import React, { useEffect } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { StateCode } from "./types";
+import { State } from "./types";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { InfoPipes } from "./info-pipes";
@@ -53,7 +53,7 @@ export const InfoCard = ({
     const outputs = useQuery(api.reactor.getAsInput, { sensorId: selected_sensor })?.map(({ t, pressure, max_t, min_p, output }) => [t, pressure, max_t, min_p, output]) || [];
     let icon_color = "#3fd46e";
     let icon_info = "Healthy"
-    if (status == StateCode.on) {
+    if (status == State.on) {
         for (const out of outputs) {
             if (out[0] > out[2] + 3) {
                 icon_color = "#d42724";

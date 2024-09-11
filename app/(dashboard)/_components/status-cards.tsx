@@ -11,7 +11,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { useMutation, useQuery } from "convex/react";
-import { StateCode } from "./types";
+import { State } from "./types";
 import { api } from "@/convex/_generated/api";
 import { stringify } from "querystring";
 import { Circle } from "lucide-react";
@@ -22,12 +22,12 @@ export const StatusCards = () => {
     const mutateSensorStatus = useMutation(api.reactor.updateState)
     const startSystem = () => {
         for (let i = 0; i < 8; i++) {
-            mutateSensorStatus({ sensorId: i, newStatusCode: StateCode.starting });
+            mutateSensorStatus({ sensorId: i, newStatusCode: State.starting });
         }
     };
     const shutdownSystem = () => {
         for (let i = 1; i < 8; i++) {
-            mutateSensorStatus({ sensorId: i, newStatusCode: StateCode.shuttingDown });
+            mutateSensorStatus({ sensorId: i, newStatusCode: State.shuttingDown });
         }
     };
 
