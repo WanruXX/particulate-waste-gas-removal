@@ -16,17 +16,6 @@ export const getAllReactors = query({
   },
 });
 
-
-export const getNumInState = query({
-  args: {
-    status: v.float64(),
-  },
-  handler: async (ctx, args) => {
-    const sensors = await ctx.db.query("sensors").withIndex("by_sensor_id").order("asc").filter((q) => q.eq(q.field("status"), args.status)).collect();
-    return sensors?.length || 0;
-  },
-});
-
 export const getNumInStates = query({
   handler: async (ctx) => {
     const userPurchases = await ctx.db.query("sensors").collect();
@@ -34,7 +23,7 @@ export const getNumInStates = query({
     return userPurchases.reduce(
       (counts, { state }) => ({
         ...counts,
-        [state]: counts[state] ?? 0 + 1,
+        [state]: counts[state] ? counts[state] + 1 : 1,
       }),
       {} as Record<string, number>,
     );

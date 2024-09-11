@@ -18,5 +18,9 @@ export default defineSchema({
     rate: v.float64(),
     t: v.float64(),
   }),
-
+  system: defineTable({
+    capacity: v.float64(),
+    handled: v.float64(),
+    profit: v.float64(),
+  }),
 });

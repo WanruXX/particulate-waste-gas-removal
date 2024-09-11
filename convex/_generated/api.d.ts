@@ -14,6 +14,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as reactor from "../reactor.js";
+import type * as system from "../system.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -25,6 +26,7 @@ import type * as reactor from "../reactor.js";
  */
 declare const fullApi: ApiFromModules<{
   reactor: typeof reactor;
+  system: typeof system;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

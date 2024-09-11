@@ -24,18 +24,8 @@ export default function Dashboard() {
   const setGoodnessForReactorId = (reactor_id: number, goodness_code: number) => {
     let new_goodness = goodness;
     new_goodness[reactor_id] = goodness_code;
-    console.log(new_goodness);
     setGoodnessAll(new_goodness);
   };
-
-  const reactor_data = useQuery(api.reactor.getAllReactors);
-  const [state, description] = reactor_data?.map(({ state, description }) => [state, description])[0] || [State.off, ""];
-
-  // const pipe_data = useQuery(api.reactor.getAllReactors);
-  // const [state, description] = reactor_data?.map(({ state, description }) => [state, description])[0] || [StateCode.off, ""];
-
-  // const new_goodness = state.map(());
-
 
   return (
     <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
@@ -45,7 +35,7 @@ export default function Dashboard() {
         <UserAvatar />
       </header>
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
-        <div className="h-[1450px] grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
+        <div className="h-[1500px] grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
           <HearderCards  goodness={goodness}/>
           <ViewTabs selected_sensor={selected_reactor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
           <InfoCard selected_reactor={selected_reactor}  goodness={goodness[selected_reactor]}/>
