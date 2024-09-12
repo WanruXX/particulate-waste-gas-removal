@@ -38,7 +38,7 @@ export const InfoPipes = ({
     pipes,
 }: InfoPipesProps) => {
 
-    const rate = parseFloat((Math.random() * 2 + 14).toPrecision(4));
+    const rate = parseFloat((Math.random() * 0.02 + 0.57).toPrecision(4));
 
     const children = pipes.map((data) => (
         <ul className="grid gap-2">
@@ -47,14 +47,14 @@ export const InfoPipes = ({
                 <span className="text-muted-foreground">Temperature (K)</span>
             </li>
             <li className="flex items-center justify-between text-muted-foreground">
-                <span>{data[0]}</span>
-                <Progress className="w-4/5" value={(data[0] - data[2] + 18) * 100 / 24} color={get_progress_color_p(data[1], data[3])} />
+                <span>{data[0].toPrecision(6)}</span>
+                <Progress className="w-4/5" value={(data[0] - data[2] + 18) * 100 / 24} color={get_progress_color_t(data[0], data[2])} />
             </li>
             <li className="flex items-center justify-between text-muted-foreground">
                 <span className="text-muted-foreground">Pressure (atm)</span>
             </li>
             <li className="flex items-center justify-between text-muted-foreground">
-                <span>{data[1]}</span>
+                <span>{data[1].toPrecision(4)}</span>
                 <Progress className="w-4/5" value={(data[1]) * 100 / 2.5} color={get_progress_color_p(data[1], data[3])} />
             </li>
             <li className="flex items-center justify-between text-muted-foreground">
@@ -62,7 +62,7 @@ export const InfoPipes = ({
             </li>
             <li className="flex items-center justify-between mb-2 text-muted-foreground">
                 <span>{rate}</span>
-                <Progress className="w-4/5" value={rate * 160} color="bg-green-600" />
+                <Progress className="w-4/5" value={rate * 100} color="bg-green-600" />
             </li>
         </ul>
     )

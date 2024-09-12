@@ -60,3 +60,9 @@ export const getAsOuput = query({
     return await ctx.db.query("pipes").filter((q) => q.eq(q.field("output"), args.sensorId)).collect();
   },
 });
+
+export const getAllPipes = query({
+  handler: async (ctx) => {
+    return await ctx.db.query("pipes").collect();
+  },
+});

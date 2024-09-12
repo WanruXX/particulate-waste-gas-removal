@@ -11,14 +11,12 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { useMutation, useQuery } from "convex/react";
-import { getGoodnessColor, getStateColor, getStateText, State } from "./types";
+import { getStateColor, getStateText, Goodness, State } from "./types";
 import { api } from "@/convex/_generated/api";
-import { stringify } from "querystring";
 import { Circle } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { CalendarForm } from "./date-picker";
 import { useState } from "react";
-import { setDate } from "date-fns";
 
 interface HearderCardsProps {
     goodness: number[],
@@ -53,10 +51,14 @@ export const HearderCards = ({
         }
     };
     const shutdownSystem = () => {
-        for (let i = 1; i < 8; i++) {
+        for (let i = 0; i < 8; i++) {
             mutateReactorState({ sensorId: i, newState: State.shuttingDown });
         }
     };
+
+    // if(system_goodness == Goodness.error){
+    //     shutdownSystem();
+    // }
 
     const system_data = useQuery(api.system.get);
     const [date_processed, setDateProcessed] = useState<Date | undefined>(new Date());
@@ -67,24 +69,26 @@ export const HearderCards = ({
             <Card className="sm:col-span-2" x-chunk="dashboard-05-chunk-0">
                 <CardHeader className="pb-3">
                     <CardTitle>Overview</CardTitle>
-                    <CardDescription className="max-w-lg text-balanced leading-relaxed flex items-center gap-3">
-                        <Circle fill={getStateColor(system_state, system_goodness)} stroke="none" size={18} id="icon" />
-                        <Label htmlFor="icon">{getStateText(system_state, system_goodness)}</Label>
+                    <CardDescription className="w-full h-8 text-md">
+                        <div className="relative left-0 top-3 flex items-center gap-3 w-[290px] h-8">
+                            <Circle fill={getStateColor(system_state, system_goodness)} stroke="none" size={18} id="icon" />
+                            <Label htmlFor="icon">{getStateText(system_state, system_goodness)}</Label>
+                        </div>
                         <Button
-                            className={`ml-48 rounded-full w-32 ${(system_state == State.off || system_state == State.starting) ? "bg-green-500" : "bg-red-500"}`}
+                            className={`absolute left-[420px] top-32 rounded-full w-32 h- ${(system_state == State.off || system_state == State.starting) ? "bg-green-500" : "bg-red-500"}`}
                             disabled={system_state == State.starting || system_state == State.shuttingDown}
                             onClick={system_state == State.off ? () => startSystem() : () => shutdownSystem()}>
                             {(system_state == State.off || system_state == State.starting) ? "Start" : "Stop"}
                         </Button>
                     </CardDescription>
                 </CardHeader>
-                <CardContent >
+                <CardContent className="mt-3">
                     <div className="flex flex-row">
                         <div className="w-5/6">
                             <div className="text-sm">The system is operating at its maximum capacity's</div>
-                            <Progress value={system_state == State.on ? system_data?.capacity : 0} className="w-5/6 mt-2" />
+                            <Progress value={system_state == State.on ? system_data?.capacity : 0} className="w-5/6 mt-3" />
                         </div>
-                        <div className="text-3xl font-semibold mt-2">{system_state == State.on ? system_data?.capacity : ""}%</div>
+                        <div className="text-3xl font-semibold mt-2">{system_state == State.on ? system_data?.capacity.toPrecision(3) : ""}%</div>
                     </div>
                 </CardContent>
             </Card>

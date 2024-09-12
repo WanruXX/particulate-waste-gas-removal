@@ -1,3 +1,5 @@
+/* prettier-ignore-start */
+
 /* eslint-disable */
 /**
  * Generated `api` utility.
@@ -14,6 +16,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as reactor from "../reactor.js";
+import type * as simulator from "../simulator.js";
 import type * as system from "../system.js";
 
 /**
@@ -26,6 +29,7 @@ import type * as system from "../system.js";
  */
 declare const fullApi: ApiFromModules<{
   reactor: typeof reactor;
+  simulator: typeof simulator;
   system: typeof system;
 }>;
 export declare const api: FilterApi<
@@ -36,3 +40,5 @@ export declare const internal: FilterApi<
   typeof fullApi,
   FunctionReference<any, "internal">
 >;
+
+/* prettier-ignore-end */
