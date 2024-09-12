@@ -11,6 +11,10 @@ import { SvgWaterSupply } from "./icons/svg-water-supply";
 import { SvgDollar } from "./icons/svg-dollar";
 import { SvgOilExtraction } from "./icons/svg-oil-extraction";
 import { SvgPowerPlant } from "./icons/svg-pwer-plant";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Goodness } from "./types";
+import { number } from "zod";
 
 interface AnimatedDashPrps {
     x1: number,
@@ -57,26 +61,69 @@ const AnimatedPolyline = ({
 interface GraphViewProps {
     selected_sensor: number,
     setSelectedReactor: (sensor_id: number) => void,
-    setGoodnessForReactorId: (reactor_id: number, goodness_code: number) => void
+    goodnesses: number[],
+    setGoodnessForReactors: (goodness_code: number[]) => void
+};
+
+const get_goodness_t = (cur_t: number, max_t: number) => {
+    if (cur_t < max_t) {
+        return Goodness.healthy;
+    }
+    else if (cur_t < max_t + 3) {
+        return Goodness.warning;
+    }
+    else {
+        return Goodness.error;
+    }
+};
+
+const get_goodness_p = (cur_p: number, min_p: number) => {
+    if (cur_p > min_p) {
+        return Goodness.healthy;
+    }
+    else if (cur_p > min_p - 0.2) {
+        return Goodness.warning;
+    }
+    else {
+        return Goodness.error;
+    }
+};
+
+const get_goodness_pipe = (pipe: number[]) => {
+    return Math.max(get_goodness_t(pipe[0], pipe[2]), get_goodness_p(pipe[1], pipe[3]));
 };
 
 export const GraphView = ({
     selected_sensor,
     setSelectedReactor,
-    setGoodnessForReactorId
+    goodnesses,
+    setGoodnessForReactors
 }: GraphViewProps) => {
+    const pipes = useQuery(api.reactor.getAllPipes)?.map(({ t, pressure, max_t, min_p, input, output }) => [t, pressure, max_t, min_p, input, output]) || [];
+    const goodness_pipes = pipes.map(get_goodness_pipe);
+    const new_goodnesses = [0, 0, 0, 0, 0, 0, 0, 0];
+    for (let i = 0; i < 13; i++) {
+        const input = pipes[i] ? pipes[i][4] : 9;
+        if (input < 8) {
+            new_goodnesses[input] = Math.max(new_goodnesses[input], goodness_pipes[i]);
+        }
+    }
+    if(JSON.stringify(new_goodnesses) !== JSON.stringify(goodnesses)){
+        setGoodnessForReactors(new_goodnesses);
+    }
+
     return (
         <TabsContent value="Graph view">
             <ScrollArea >
                 <div className="relative h-[1200px] w-[1000px] rounded-md border p-4">
-                    <SensorNode sensor_id={0} position="left-[20px] top-[200px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
-                    <SensorNode sensor_id={1} position="left-[218px] top-[205px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
-                    <SensorNode sensor_id={2} position="left-[220px] top-[420px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
-                    <SensorNode sensor_id={3} position="left-[220px] top-[640px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
-                    <SensorNode sensor_id={4} position="left-[220px] top-[860px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
-                    <SensorNode sensor_id={5} position="left-[420px] top-[420px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
-                    <SensorNode sensor_id={6} position="left-[640px] top-[420px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
-                    <SensorNode sensor_id={7} position="left-[640px] top-[200px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} setGoodnessForReactorId={setGoodnessForReactorId} />
+                    <SensorNode sensor_id={0} position="left-[20px] top-[200px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} reactor_goodness={new_goodnesses[0]} />
+                    <SensorNode sensor_id={1} position="left-[218px] top-[205px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} reactor_goodness={new_goodnesses[1]} />
+                    <SensorNode sensor_id={2} position="left-[220px] top-[420px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} reactor_goodness={new_goodnesses[2]} />
+                    <SensorNode sensor_id={3} position="left-[220px] top-[640px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} reactor_goodness={new_goodnesses[3]} />
+                    <SensorNode sensor_id={4} position="left-[220px] top-[860px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} reactor_goodness={new_goodnesses[4]} />
+                    <SensorNode sensor_id={5} position="left-[420px] top-[420px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} reactor_goodness={new_goodnesses[5]} />
+                    <SensorNode sensor_id={6} position="left-[640px] top-[420px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} reactor_goodness={new_goodnesses[6]} />
+                    <SensorNode sensor_id={7} position="left-[640px] top-[200px]" selected_sensor={selected_sensor} setSelectedReactor={setSelectedReactor} reactor_goodness={new_goodnesses[7]} />
                     <Image
                         src="/smoke-icon.svg"
                         alt="input waste gas"

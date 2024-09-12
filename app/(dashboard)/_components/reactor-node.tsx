@@ -19,15 +19,16 @@ interface SensorNodeProps {
     position: string,
     selected_sensor: number,
     setSelectedReactor: (sensor_id: number) => void,
-    setGoodnessForReactorId: (reactor_id: number, goodness_code: number) => void
+    reactor_goodness: Goodness,
 };
+
 
 export const SensorNode = ({
     sensor_id,
     position,
     selected_sensor,
     setSelectedReactor,
-    setGoodnessForReactorId,
+    reactor_goodness,
 }: SensorNodeProps) => {
     const reactor_data = useQuery(api.reactor.get, { sensorId: sensor_id });
     const state: State = reactor_data?.map(({ state }) => state)[0] || State.off;
@@ -37,25 +38,6 @@ export const SensorNode = ({
     if (state == State.starting || state == State.shuttingDown) {
         icon_class += " animate-pulse duration-1000";
     }
-
-    const get_goodness = (sensors: number[][]) => {
-        let good = Goodness.healthy;
-        for (const sensor of sensors) {
-            if (sensor[0] > sensor[2] + 3) {
-                return Goodness.error;
-            }
-            if (sensor[1] < sensor[3] - 0.2) {
-                return Goodness.error;
-            }
-            if (sensor[0] > sensor[2] || sensor[1] < sensor[3]) {
-                good = Goodness.warning;
-            }
-        }
-        return good;
-    };
-    const outputs = useQuery(api.reactor.getAsInput, { sensorId: selected_sensor })?.map(({ t, pressure, max_t, min_p }) => [t, pressure, max_t, min_p]) || [];
-    const goodness = get_goodness(outputs);
-    setGoodnessForReactorId(sensor_id, goodness);
 
     const handleClick = () => {
         if (selected_sensor == sensor_id) {
@@ -69,27 +51,27 @@ export const SensorNode = ({
     let sensor_icon: ReactNode;
     switch (sensor_id) {
         case 0:
-            sensor_icon = <SvgHeatRecover fill={getStateColor(state, goodness)} className={icon_class} />
+            sensor_icon = <SvgHeatRecover fill={getStateColor(state, reactor_goodness)} className={icon_class} />
             break;
         case 1:
         case 3:
-            sensor_icon = <SvgDustRemoval fill={getStateColor(state, goodness)} className={icon_class} />
+            sensor_icon = <SvgDustRemoval fill={getStateColor(state, reactor_goodness)} className={icon_class} />
             break;
         case 2:
         case 4:
-            sensor_icon = <SvgLiquidSolidSeparation fill={getStateColor(state, goodness)} className={icon_class} />
+            sensor_icon = <SvgLiquidSolidSeparation fill={getStateColor(state, reactor_goodness)} className={icon_class} />
             break;
         case 5:
-            sensor_icon = <SvgGasHydrate fill={getStateColor(state, goodness)} className={icon_class} />
+            sensor_icon = <SvgGasHydrate fill={getStateColor(state, reactor_goodness)} className={icon_class} />
             break;
         case 6:
-            sensor_icon = <SvgGasSolid fill={getStateColor(state, goodness)} className={icon_class} />
+            sensor_icon = <SvgGasSolid fill={getStateColor(state, reactor_goodness)} className={icon_class} />
             break;
         case 7:
-            sensor_icon = <SvglowTempFrac fill={getStateColor(state, goodness)} className={icon_class} />
+            sensor_icon = <SvglowTempFrac fill={getStateColor(state, reactor_goodness)} className={icon_class} />
             break;
         default:
-            sensor_icon = <SvgBottle fill={getStateColor(state, goodness)} className={icon_class} />
+            sensor_icon = <SvgBottle fill={getStateColor(state, reactor_goodness)} className={icon_class} />
     };
 
     if (state === State.off) {
