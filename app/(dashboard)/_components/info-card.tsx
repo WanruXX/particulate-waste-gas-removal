@@ -109,7 +109,6 @@ export const InfoCard = ({
                             </div>
                             <Separator className="my-4" />
                         </div>
-
                         <div className="grid gap-4">
                             <div className="grid auto-rows-max gap-3">
                                 <div className="font-semibold">About</div>
@@ -125,7 +124,6 @@ export const InfoCard = ({
                         </div>
                     </CardFooter>
                 </Card>
-
             </ScrollArea>
         </div>
     );
