@@ -33,6 +33,17 @@ const get_progress_color_p = (cur_p: number, min_p: number) => {
     }
 };
 
+const descriptions = [
+    "Waste heat recovery",
+    "Gas hydrate primary dust removal",
+    "1st solid-liquid separation",
+    "Gas hydrate secondary dust removal",
+    "2nd solid-liquid separation",
+    "Gas hydrate decomposition",
+    "Gas-solid separation",
+    "Low temperature fractionation"
+];
+
 export const InfoPipes = ({
     title,
     pipes,
@@ -41,8 +52,8 @@ export const InfoPipes = ({
     const rate = parseFloat((Math.random() * 0.02 + 0.57).toPrecision(4));
 
     const children = pipes.map((data) => (
-        <ul className="grid gap-2">
-            <div className="font-medium">{useQuery(api.reactor.get, { sensorId: data[4] })?.map(({ description }) => description) || ""}</div>
+        <ul className="grid gap-2" key={data[4]}>
+            <div className="font-medium">{descriptions[data[4]]}</div>
             <li className="flex items-center justify-between">
                 <span className="text-muted-foreground">Temperature (K)</span>
             </li>

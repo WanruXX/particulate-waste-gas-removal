@@ -85,7 +85,7 @@ export const HearderCards = ({
                 <CardContent className="mt-3">
                     <div className="flex flex-row">
                         <div className="w-5/6">
-                            <div className="text-sm">The system is operating at its maximum capacity's</div>
+                            <div className="text-sm">The system is operating at its maximum capacity&sbquo;s</div>
                             <Progress value={system_state == State.on ? system_data?.capacity : 0} className="w-5/6 mt-3" />
                         </div>
                         <div className="text-3xl font-semibold mt-2">{system_state == State.on ? system_data?.capacity.toPrecision(3) : ""}%</div>
